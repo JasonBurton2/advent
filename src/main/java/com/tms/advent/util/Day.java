@@ -12,10 +12,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tms.advent.Config;
+
 public abstract class Day<T> {
-	protected static String BASEDIR = System.getProperty("user.home") + "/git/advent";
-	protected static String YEAR = "2021";
-	private static final String MY_DOWNLOAD_COOKIE = "session=53616c7465645f5f415e78649018b843257a9e2c56b01502ef5a39dba39c6e1cb06a81c84c209773f97f852efba6a624";
 	protected List<String> inputStrings;
 	protected List<T> input;
 	protected String inputFile;
@@ -26,6 +25,8 @@ public abstract class Day<T> {
 	protected abstract Object part2();
 	
 	public Day() {
+		if (Config.MY_DOWNLOAD_COOKIE == null)
+			throw new RuntimeException("You need to set MY_DOWNLOAD_COOKIE in Config.java.");
 		boolean test = false;
 		Annotation[] annotations = getClass().getAnnotations();
 		for (Annotation a : annotations) {
@@ -38,9 +39,9 @@ public abstract class Day<T> {
 		justClass = justClass.substring(justClass.lastIndexOf('.') + 1);
 		File file;
 		if (test)
-			file = new File(BASEDIR + "/test-input/" + YEAR + "/" + justClass + ".txt");
+			file = new File(Config.BASEDIR + "/test-input/" + Config.YEAR + "/" + justClass + ".txt");
 		else
-			file = new File(BASEDIR + "/input/" + YEAR + "/" + justClass + ".txt");
+			file = new File(Config.BASEDIR + "/input/" + Config.YEAR + "/" + justClass + ".txt");
 		if (!file.exists())
 			download(justClass.substring(3), file);
 		try {
@@ -49,7 +50,7 @@ public abstract class Day<T> {
 			throw new RuntimeException(ex);
 		}
 	}
-	
+
 	protected void makeInputList() {
 		input = new ArrayList<>();
 		for (int i = 0; i < inputStrings.size(); i++)
@@ -124,11 +125,11 @@ public abstract class Day<T> {
 	
 	public void download(String day, File file) {
 		try {
-	        URL url = new URL("https://adventofcode.com/" + YEAR + "/day/" + day + "/input");
+	        URL url = new URL("https://adventofcode.com/" + Config.YEAR + "/day/" + day + "/input");
 	        HttpURLConnection con = (HttpURLConnection)url.openConnection();
         	con.addRequestProperty("Content-Type", "text/html");
             con.setRequestMethod("GET");
-        	con.addRequestProperty("Cookie", MY_DOWNLOAD_COOKIE); 
+        	con.addRequestProperty("Cookie", Config.MY_DOWNLOAD_COOKIE); 
             con.connect();
             if (con.getResponseCode() == 200) {
             	try (FileOutputStream output = new FileOutputStream(file)) {
