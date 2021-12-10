@@ -129,7 +129,7 @@ public abstract class Day<T> {
 	        HttpURLConnection con = (HttpURLConnection)url.openConnection();
         	con.addRequestProperty("Content-Type", "text/html");
             con.setRequestMethod("GET");
-        	con.addRequestProperty("Cookie", Config.MY_DOWNLOAD_COOKIE); 
+        	con.addRequestProperty("Cookie", "session=" + Config.MY_DOWNLOAD_COOKIE); 
             con.connect();
             if (con.getResponseCode() == 200) {
             	try (FileOutputStream output = new FileOutputStream(file)) {
