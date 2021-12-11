@@ -16,8 +16,7 @@ public class Day9 extends Day<String> {
 	List<Integer> basins = new ArrayList<>();
 
 	public void onRun() {
-		grid = new Grid<>(Integer.class, input.size(), input.get(0).length());
-		grid.visit(point -> grid.set(point, input.get(point.line).charAt(point.col) - 48));
+		grid = Grid.readIntGrid(input);
 		grid.visit(point -> {		
 			if (grid.visitAdjacentWithBoolean(point, true, (adj, value) -> value = value && grid.get(point) < grid.get(adj))) {
 				riskLevel += grid.get(point) + 1;
