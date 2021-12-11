@@ -21,14 +21,31 @@ public class PointLineCol {
 	
 	public PointLineCol move(int heading, int amount) {
 		PointLineCol point = new PointLineCol(this);
+		heading = heading % 360;
 		if (heading == 0)
 			point.line -= amount;
+		else if (heading == 45) {
+			point.line -= amount;
+			point.col += amount;
+		}
 		else if (heading == 90)
 			point.col += amount;
+		else if (heading == 135) {
+			point.line += amount;
+			point.col += amount;
+		}
 		else if (heading == 180)
 			point.line += amount;
+		else if (heading == 225) {
+			point.line += amount;
+			point.col -= amount;
+		}
 		else if (heading == 270)
 			point.col -= amount;
+		else if (heading == 315) {
+			point.line -= amount;
+			point.col -= amount;
+		}
 		return point;
 	}
 	

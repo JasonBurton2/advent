@@ -1,9 +1,20 @@
 package com.tms.advent.util;
 
 import java.lang.reflect.Array;
+import java.util.List;
 
 public class Grid<T> {
 	public T[][] grid;
+
+	public static Grid<Integer> readIntGrid(List<String> input) {
+		int lines = input.size();
+		int cols = input.get(0).length();
+		Grid<Integer> grid = new Grid<>(Integer.class, lines, cols);
+		for (int line = 0; line < lines; line++)
+			for (int col = 0; col < cols; col++)
+				grid.set(new PointLineCol(line, col), input.get(line).charAt(col) - 48);		
+		return grid;
+	} 
 
 	public static interface GridVisitor {
 		public void visit(PointLineCol point);
@@ -53,8 +64,13 @@ public class Grid<T> {
 	}
 
 	public Object visitAdjacentWithObject(PointLineCol point, Object initValue, ObjectGridVisitor visitor) {
+		return visitAdjacentWithObject(point, false, initValue, visitor);
+	}
+
+	public Object visitAdjacentWithObject(PointLineCol point, boolean visitDiagonal, Object initValue, ObjectGridVisitor visitor) {
 		Object value = initValue;
-		for (int heading = 0; heading < 360; heading += 90) {
+		int step = visitDiagonal ? 45 : 90;
+		for (int heading = 0; heading < 360; heading += step) {
 			PointLineCol adj = point.move(heading, 1);
 			if (adj.line >= 0 && adj.line < grid.length && adj.col >= 0 && adj.col < grid[adj.line].length)
 				value = visitor.visit(adj, value);
