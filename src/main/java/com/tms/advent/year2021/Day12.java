@@ -10,7 +10,7 @@ import com.tms.advent.util.StringUtil;
 
 public class Day12 extends Day<String> {
 	List<Path> paths;
-	Cave start;
+	Cave start, end;
 	
 	protected void initDay() {
 		Map<String, Cave> caves = new HashMap<>();
@@ -20,6 +20,7 @@ public class Day12 extends Day<String> {
 		}
 		paths = new ArrayList<>();
 		start = caves.get("start");
+		end = caves.get("end");
 	}
 
     public Object part1() {
@@ -32,7 +33,7 @@ public class Day12 extends Day<String> {
 
 	private int findRoutesToEnd(List<Path> paths, Path path, boolean canVisitSmallTwice) {
 		Cave current = path.last();
-		if (current.id.equals("end"))
+		if (current == end)
 			paths.add(path);
 		else 
 			for (Cave other : current.connections)
@@ -42,12 +43,10 @@ public class Day12 extends Day<String> {
 	}
 
 	private class Cave {
-		private String id;
 		private List<Cave> connections = new ArrayList<>();
 		private boolean big;
 
 		private Cave(String id) {
-			this.id = id;
 			this.big = id.charAt(0) >= 'A' && id.charAt(0) <= 'Z';
 		}
 
