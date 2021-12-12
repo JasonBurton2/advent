@@ -9,7 +9,6 @@ import com.tms.advent.util.Day;
 import com.tms.advent.util.StringUtil;
 
 public class Day12 extends Day<String> {
-	List<Path> paths;
 	Cave start, end;
 	
 	protected void initDay() {
@@ -18,17 +17,16 @@ public class Day12 extends Day<String> {
 			Cave cave1 = caves.computeIfAbsent(StringUtil.textBefore("-", line), (key) -> new Cave(key));
 			caves.computeIfAbsent(StringUtil.textAfter("-", line), (key) -> new Cave(key)).connect(cave1);
 		}
-		paths = new ArrayList<>();
 		start = caves.get("start");
 		end = caves.get("end");
 	}
 
     public Object part1() {
-		return findRoutesToEnd(paths, new Path(null, start), false);
+		return findRoutesToEnd(new ArrayList<>(), new Path(null, start), false);
     }
 
     public Object part2() {
-		return findRoutesToEnd(paths, new Path(null, start), true);		
+		return findRoutesToEnd(new ArrayList<>(), new Path(null, start), true);		
     }
 
 	private int findRoutesToEnd(List<Path> paths, Path path, boolean canVisitSmallTwice) {
