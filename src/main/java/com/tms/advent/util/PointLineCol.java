@@ -4,6 +4,11 @@ public class PointLineCol {
 	public int line, col;
 	public PointLineCol() {
 	}
+
+	public PointLineCol(String str) {
+		col = Integer.parseInt(StringUtil.textBefore(",", str));
+		line = Integer.parseInt(StringUtil.textAfter(",", str));
+	}
 	
 	public PointLineCol(int line, int col) {
 		this.line = line;

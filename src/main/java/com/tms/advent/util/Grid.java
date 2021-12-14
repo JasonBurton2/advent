@@ -37,22 +37,67 @@ public class Grid<T> {
 		grid = (T[][])Array.newInstance(cls, lines, cols);		
 	}
 
+	@SuppressWarnings("unchecked")		
+	public Grid(Class<?> cls, int lines, int cols, T initValue) {
+		grid = (T[][])Array.newInstance(cls, lines, cols);		
+		visit(point -> set(point, initValue));
+	}
+
+	public String toString() {
+		return toString((point, value) -> value);
+	}
+
+	public String toString(ObjectGridVisitor visitor) {
+		StringBuilder result = new StringBuilder();
+		int cols = numCols();
+		visit(point -> {
+			result.append(visitor.visit(point, get(point)));
+			if (point.col == cols - 1)
+				result.append("\n");
+		});
+		return result.toString();
+	}
+
+
+	public int numLines() {
+		return grid.length;
+	}
+
+	public int numCols() {
+		return grid[0].length;
+	}
+
 	public T get(PointLineCol point) {
 		return grid[point.line][point.col];
 	}
 
-	public void set(PointLineCol point, T value) {
+	public Grid<T> set(PointLineCol point, T value) {
 		grid[point.line][point.col] = value;
+		return this;
 	}
 
-	public void visit(GridVisitor visitor) {
+	public Grid<T> visit(GridVisitor visitor) {
 		for (int line = 0; line < grid.length; line++)
 			for (int col = 0; col < grid[line].length; col++) 
 				visitor.visit(new PointLineCol(line, col));
+		return this;
 	}
 
-	public void visitAdjacent(PointLineCol point, GridVisitor visitor) {
+	public Object visitWithObject(Object initValue, ObjectGridVisitor visitor) {
+		Object value = initValue;
+		for (int line = 0; line < grid.length; line++)
+			for (int col = 0; col < grid[line].length; col++) 
+				value = visitor.visit(new PointLineCol(line, col), value);
+		return value;
+	}
+
+	public int visitWithInt(int initValue, IntGridVisitor visitor) {
+		return (int)visitWithObject(initValue, (adj, value) -> visitor.visit(adj, (int)value));
+	}
+
+	public Grid<T> visitAdjacent(PointLineCol point, GridVisitor visitor) {
 		visitAdjacentWithObject(point, null, (adj, value) -> { visitor.visit(adj); return null; });		
+		return this;
 	}
 
 	public boolean visitAdjacentWithBoolean(PointLineCol point, boolean initValue, BooleanGridVisitor visitor) {
