@@ -1,5 +1,7 @@
 package com.tms.advent.util;
 
+import java.util.Objects;
+
 public class PointLineCol {
 	public int line, col;
 	public PointLineCol() {
@@ -78,8 +80,6 @@ public class PointLineCol {
 	
 	@Override
 	public int hashCode() {
-        long bits = Double.doubleToLongBits(line);
-        bits ^= Double.doubleToLongBits(col) * 31;
-        return (((int) bits) ^ ((int) (bits >> 32)));
+		return Objects.hash(line, col);
 	}
 }
